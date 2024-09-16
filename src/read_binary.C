@@ -29,6 +29,12 @@
 #include "TCanvas.h"
 #include "Getline.h"
 
+/*
+ * Added custom class to produce output
+ */
+#include "Evento.h"
+
+
 #define NBOARDS 16
 
 typedef struct {
@@ -104,10 +110,23 @@ void decode(const char *filename) {
 	
    // mia modifica per leggere il file  efare un output
    TFile *fnew = new TFile("output.root", "recreate");
+   Evento e;
+   Channel Placeholder;
+   TTree *tree = new TTree("e", "e");
+   tree->Branch("e",&e);
+   
+   
+   
+   
    // define the rec tree
    TTree *rec = new TTree("rec", "rec");
    rec->Branch("amp0", &amplitude[0], "amp0/D");
 
+   
+   
+   
+   
+   
    // create canvas
    TCanvas *c1 = new TCanvas();
 
@@ -166,7 +185,16 @@ void decode(const char *filename) {
       i = fread(&eh, sizeof(eh), 1, f);
       if (i < 1)
          break;
-
+         
+         
+         
+      //fill custom object with ID   
+      e.channel.clear();
+      e.NEvento = eh.event_serial_number;
+	  // end customization
+	  
+	  
+	  
       printf("Found event #%d\r", eh.event_serial_number);
       fflush(stdout);
 
@@ -185,6 +213,12 @@ void decode(const char *filename) {
 
          // reach channel data
          for (chn=0 ; chn<18 ; chn++) {
+
+			//specify in tree the channel number
+			Placeholder.NChannel = chn;
+			
+			
+
 
             // read channel header
             fread(&ch, sizeof(ch), 1, f);
@@ -215,9 +249,19 @@ void decode(const char *filename) {
                   // calculate time for this cell
                   for (j = 0, time[b][chn_index][i] = 0; j < i; j++)
                      time[b][chn_index][i] += bin_width[b][chn_index][(j + tch.trigger_cell) % 1024];
+                  
+                  
+                  
                }
+               for(int i = 0; i++; i<1024){ 
+					Placeholder.Time[i] = waveform[b][chn_index][i];
+					Placeholder.Volt[i] = time[b][chn_index][i];
+				}
+				e.channel.push_back(Placeholder);
 
-            } else if (ch.c[0] == 'A') {
+            } 
+            
+            else if (ch.c[0] == 'A') {
 
                // Read ADC data
                short adc_voltage[2048];
@@ -265,21 +309,22 @@ void decode(const char *filename) {
          // uncomment the following to show raw waveforms
          /*
          for (i = 0; i < 1024; i++)
-            g->SetPoint(i, time[0][0][i], waveform[0][0][i]);
+            g->SetPoint(i, time[0][1][i], waveform[0][1][i]);
 
          // draw graph and wait for user click
          g->Draw("ACP");
          c1->Update();
          gPad->WaitPrimitive();
          */
+         tree->Fill();
       }
+      
    }
 
    printf("\n");
 
    // project tree
    //rec->Draw("amp0");
-   
    fnew->Write();
    fnew->Close();
 }
