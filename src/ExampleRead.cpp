@@ -13,8 +13,8 @@ void ExampleRead(TString filename){
 	double waveform[0][1024], time[0][1024];
 
 	TFile *input = new TFile(filename,"READ");
-	TTree *tree = (TTree)* input->Get("tree");
-	tree->SetBranchAddress("e", &e);
+	TTree *tree = (TTree*) input->Get("tree");
+	tree->SetBranchAddress("e", &p);
 	int entries = tree->GetEntries();
 	
 	tree->GetEntry(1);

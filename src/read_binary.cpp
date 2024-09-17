@@ -253,9 +253,9 @@ void decode(const char *filename) {
                   
                   
                }
-               for(int i = 0; i++; i<1024){ 
-					Placeholder.Time[i] = waveform[b][chn_index][i];
-					Placeholder.Volt[i] = time[b][chn_index][i];
+               for(int i = 0;  i<1024; i++){ 
+					Placeholder.Volt[i] = waveform[b][chn_index][i];
+					Placeholder.Time[i] = time[b][chn_index][i];
 				}
 				e.channel.push_back(Placeholder);
 
