@@ -3,19 +3,19 @@ Code to extract feature from wavedream, such as points in time and voltage
 
 # How to run
 
-$ root 
+$ root <br />
 
-"""
-ROOT TERMINAL
-"""
+"""<br />
+ROOT TERMINAL <br />
+"""<br />
 
-.L read_binary.cpp++
-decode("file.dat")
-.q
-
-
-from terminal, example read:
+.L read_binary.cpp++ <br />
+decode("file.dat") <br />
+.q <br />
 
 
-$ root 'ExampleRead.cpp++("output.root")'
+from terminal, example read:<br />
+
+
+$ root 'ExampleRead.cpp++("output.root")'<br />
 
