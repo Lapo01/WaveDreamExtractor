@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-void ReadData(const string file){
+void ReadData(const string file, int ch){
 
 TString FileName= file;
 TFile *input = new TFile(FileName,"read");
@@ -26,7 +26,6 @@ double baseline=0;
 double peakpeak = 0;
 double integral = 0;
 int minindex = 0;
-int ch = 0;
 
 bool trigger = 0;
 int infint = 50;
