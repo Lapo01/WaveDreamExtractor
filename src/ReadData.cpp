@@ -16,20 +16,27 @@ tree->SetBranchAddress("e", &p);
 int entries = tree->GetEntries();
 cout<<"entries "<<entries<<endl;
 
-TH1F *histpeak = new TH1F("histpeak","signal peak",1000,0,1 );
+TH1F *histpeak = new TH1F("histpeak","signal peak",1000,0,300 );
+TH1F *histintegral = new TH1F("histintegral","signal integral",1000,-10,1 );
 
-double threshold = -0.029;
+double threshold = 0;
 double minvolt = threshold;
 double mintime;
 double baseline=0;
-double peakpeak;
+double peakpeak = 0;
+double integral = 0;
 int minindex = 0;
-int ch = 1;
-bool flag = 1;
+int ch = 0;
+
+bool trigger = 0;
+int infint = 50;
+int supint = 200;
+
 for(int i=0; i<entries;i++)
 {
     minvolt = threshold;
     baseline = 0;
+    integral = 0;
 
     tree->GetEntry(i);
     for(int j=0; j<1024;j++)
@@ -39,29 +46,41 @@ for(int i=0; i<entries;i++)
             minvolt = e.channel[ch].Volt[j];
             mintime = e.channel[ch].Time[j];
             minindex = j;
-            bool flag = 1;
+            trigger = 1;
         }
-        else
-        {
-			flag = 0
-		}
     }
-    if (flag == 1){
-		for(int j=0; j<minindex-300;j++)
-		{
-			baseline += e.channel[ch].Volt[j]/(minindex-300.);
-		}
-	
-		peakpeak = baseline - minvolt;
-
-		histpeak->Fill(peakpeak);
-	}
-    //cout<<peakpeak<<endl;
     
+    if(trigger)
+    {
+        //PEAKPEAK
+        for(int j=0; j<minindex-300;j++)
+        {
+            baseline += e.channel[ch].Volt[j]/(minindex-300.);
+        }
+        peakpeak = baseline - minvolt;
+
+        histpeak->Fill(peakpeak*1000);
+
+        //TRIGGER
+        for(int j= minindex-infint; j<minindex+supint; j++)
+        {
+            integral += (e.channel[ch].Volt[j] + e.channel[ch].Volt[j+1] - 2.*baseline)*(e.channel[ch].Time[j+1] - e.channel[ch].Time[j])/2.;
+        }
+        //cout<<integral<<endl;
+        histintegral->Fill(integral*1e10);
+
+    }   
 }
 
-TCanvas *c = new TCanvas();
+TCanvas *Cpeak = new TCanvas();
 histpeak->Draw();
+histpeak->GetXaxis()->SetTitle("peakpeak [mV]");
+histpeak->GetYaxis()->SetTitle("counts");
+
+TCanvas *Cintegral = new TCanvas();
+histintegral->Draw();
+histintegral->GetXaxis()->SetTitle("Integral [V*t*10^(-10)]");
+histintegral->GetYaxis()->SetTitle("counts");
 
 
 }
