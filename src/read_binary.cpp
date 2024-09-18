@@ -77,7 +77,7 @@ typedef struct {
 
 /*-----------------------------------------------------------------------------*/
 
-void decode(const char *filename) {
+void decode(const char *filename, TString fileoutput) {
    FHEADER fh;
    THEADER th;
    BHEADER bh;
@@ -109,7 +109,7 @@ void decode(const char *filename) {
 	
 	
    // mia modifica per leggere il file  efare un output
-   TFile *fnew = new TFile("output.root", "recreate");
+   TFile *fnew = new TFile(fileoutput, "recreate");
    Evento e;
    Channel Placeholder;
    TTree *tree = new TTree("tree", "tree");
@@ -331,5 +331,5 @@ void decode(const char *filename) {
 
 void read_binary()
 {
-   decode("test.dat");
+   decode("test.dat", "lol.dat");
 }

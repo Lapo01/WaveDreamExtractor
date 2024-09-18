@@ -18,14 +18,14 @@ cout<<"entries "<<entries<<endl;
 
 TH1F *histpeak = new TH1F("histpeak","signal peak",1000,0,1 );
 
-double threshold = 0;
+double threshold = -0.029;
 double minvolt = threshold;
 double mintime;
 double baseline=0;
 double peakpeak;
 int minindex = 0;
 int ch = 1;
-
+bool flag = 1;
 for(int i=0; i<entries;i++)
 {
     minvolt = threshold;
@@ -39,16 +39,23 @@ for(int i=0; i<entries;i++)
             minvolt = e.channel[ch].Volt[j];
             mintime = e.channel[ch].Time[j];
             minindex = j;
+            bool flag = 1;
         }
+        else
+        {
+			flag = 0
+		}
     }
-    
-    for(int j=0; j<minindex-300;j++)
-    {
-        baseline += e.channel[ch].Volt[j]/(minindex-300.);
-    }
-    peakpeak = baseline - minvolt;
+    if (flag == 1){
+		for(int j=0; j<minindex-300;j++)
+		{
+			baseline += e.channel[ch].Volt[j]/(minindex-300.);
+		}
+	
+		peakpeak = baseline - minvolt;
 
-    histpeak->Fill(peakpeak);
+		histpeak->Fill(peakpeak);
+	}
     //cout<<peakpeak<<endl;
     
 }
