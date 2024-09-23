@@ -214,8 +214,8 @@ void decode(const char *filename, TString fileoutput) {
          // reach channel data
          for (chn=0 ; chn<18 ; chn++) {
 
-			//specify in tree the channel number
-			Placeholder.NChannel = chn;
+			//specify in tree the
+		 	//Placeholder.NChannel = chn;
 			
 			
 
@@ -228,7 +228,7 @@ void decode(const char *filename, TString fileoutput) {
                break;
             }
             chn_index = (ch.cn[1] - '0')*10 + ch.cn[2] - '0';
-
+	    Placeholder.NChannel = chn_index;
             if (ch.c[0] == 'C') {
 
                // Read DRS data
