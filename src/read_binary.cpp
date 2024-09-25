@@ -128,7 +128,7 @@ void decode(const char *filename, TString fileoutput) {
    
    
    // create canvas
-   TCanvas *c1 = new TCanvas();
+   //TCanvas *c1 = new TCanvas();
 
    // create graph
    TGraph *g = new TGraph(1024, (double *) time[0], (double *) waveform[0]);
@@ -214,8 +214,8 @@ void decode(const char *filename, TString fileoutput) {
          // reach channel data
          for (chn=0 ; chn<18 ; chn++) {
 
-			//specify in tree the
-		 	//Placeholder.NChannel = chn;
+			//specify in tree the channel number
+			//Placeholder.NChannel = chn;
 			
 			
 
@@ -228,7 +228,8 @@ void decode(const char *filename, TString fileoutput) {
                break;
             }
             chn_index = (ch.cn[1] - '0')*10 + ch.cn[2] - '0';
-	    Placeholder.NChannel = chn_index;
+            Placeholder.NChannel = chn_index;
+			
             if (ch.c[0] == 'C') {
 
                // Read DRS data
@@ -242,21 +243,37 @@ void decode(const char *filename, TString fileoutput) {
                }
 
                fread(voltage, sizeof(short), 1024, f);
-               for (i = 0; i < 1024; i++) {
+               //if(adcConversion)
+               //{
+                  for (i = 0; i < 1024; i++) {
                   // convert data to volts
-                  waveform[b][chn_index][i] = (voltage[i] / 65536. + eh.range / 1000.0 - 0.5);
+                     //waveform[b][chn_index][i] = (voltage[i] / 65536. + eh.range / 1000.0 - 0.5);
 
-                  // calculate time for this cell
-                  for (j = 0, time[b][chn_index][i] = 0; j < i; j++)
-                     time[b][chn_index][i] += bin_width[b][chn_index][(j + tch.trigger_cell) % 1024];
-                  
-                  
-                  
-               }
+
+                     // calculate time for this cell
+                     for (j = 0, time[b][chn_index][i] = 0; j < i; j++)
+                        time[b][chn_index][i] += bin_width[b][chn_index][(j + tch.trigger_cell) % 1024];
+                  }
+               //}
+               /*
+               if(adcConversion==0)
+               {
+                  //keep data in adc channels
+                  for (i = 0; i < 1024; i++) {
+                  // convert data to volts
+                     waveform[b][chn_index][i] = voltage[i];
+
+                     //keep time in sample points
+                     time[b][chn_index][i] = i;
+                  }
+
+               }*/
+               
                for(int i = 0;  i<1024; i++){ 
-					Placeholder.Volt[i] = waveform[b][chn_index][i];
-					Placeholder.Time[i] = time[b][chn_index][i];
-				}
+					   Placeholder.Volt[i] = waveform[b][chn_index][i];
+					   Placeholder.Time[i] = time[b][chn_index][i];
+                  
+				   }
 				e.channel.push_back(Placeholder);
 
             } 

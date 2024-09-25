@@ -1,14 +1,13 @@
-
-
-
-
+#include <iostream>
+#include <vector>
+using namespace std;
 
 class Channel
 {
 public: 
 	int NChannel;
 	double Time[1024];
-	double Volt[1024];
+	int Volt[1024];
 	
 };
 
@@ -17,6 +16,11 @@ class Evento
 {
 public:
 	int NEvento;
-	std::vector<Channel> channel;
+	vector<Channel> channel;
 };
 
+
+double ADCconversion(int &adc)
+{
+	return  adc/65536. - 0.5;
+}
