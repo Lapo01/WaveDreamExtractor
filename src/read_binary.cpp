@@ -102,22 +102,15 @@ void decode(const char *filename, TString fileoutput) {
       printf("Cannot find file \'%s\'\n", filename);
       return;
    }
-
-	
-	
-	
 	
 	
    // mia modifica per leggere il file  efare un output
-   TFile *fnew = new TFile(fileoutput, "recreate");
+   TFile *fnew = new TFile(fileoutput, "recreate", "", 101);
    Evento e;
    Channel Placeholder;
    TTree *tree = new TTree("tree", "tree");
    tree->Branch("e",&e);
-   
-   
-   
-   
+   tree->SetAutoFlush(10000);
    // define the rec tree
    TTree *rec = new TTree("rec", "rec");
    rec->Branch("amp0", &amplitude[0], "amp0/D");
@@ -243,8 +236,7 @@ void decode(const char *filename, TString fileoutput) {
                }
 
                fread(voltage, sizeof(short), 1024, f);
-               //if(adcConversion)
-               //{
+               
                   for (i = 0; i < 1024; i++) {
                   // convert data to volts
                      //waveform[b][chn_index][i] = (voltage[i] / 65536. + eh.range / 1000.0 - 0.5);
@@ -254,24 +246,23 @@ void decode(const char *filename, TString fileoutput) {
                      for (j = 0, time[b][chn_index][i] = 0; j < i; j++)
                         time[b][chn_index][i] += bin_width[b][chn_index][(j + tch.trigger_cell) % 1024];
                   }
-               //}
-               /*
-               if(adcConversion==0)
-               {
-                  //keep data in adc channels
-                  for (i = 0; i < 1024; i++) {
-                  // convert data to volts
-                     waveform[b][chn_index][i] = voltage[i];
+               
+               
 
-                     //keep time in sample points
-                     time[b][chn_index][i] = i;
-                  }
+               //keep data in adc channels
+               for (i = 0; i < 1024; i++) {
+               // convert data to volts
+                  waveform[b][chn_index][i] = voltage[i];
 
-               }*/
+                  //keep time in sample points
+                  //time[b][chn_index][i] = i;
+               }
+
+               
                
                for(int i = 0;  i<1024; i++){ 
 					   Placeholder.Volt[i] = waveform[b][chn_index][i];
-					   Placeholder.Time[i] = time[b][chn_index][i];
+					   Placeholder.Time[i] = time[b][chn_index][i]*1e11;
                   
 				   }
 				e.channel.push_back(Placeholder);

@@ -5,9 +5,9 @@ using namespace std;
 class Channel
 {
 public: 
-	int NChannel;
-	double Time[1024];
-	int Volt[1024];
+	uint8_t NChannel;
+	uint16_t Time[1024];
+	uint16_t Volt[1024];
 	
 };
 
@@ -22,5 +22,17 @@ public:
 
 double ADCconversion(int &adc)
 {
+	
 	return  adc/65536. - 0.5;
 }
+
+/*
+double Timeconversion(int index)
+{
+	int Time = 0;
+	for(int j = 0; j < index; j++)
+	{
+		Time +=
+	}
+}
+*/
