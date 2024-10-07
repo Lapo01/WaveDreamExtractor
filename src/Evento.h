@@ -8,7 +8,7 @@ public:
 	uint8_t NChannel;
 	uint16_t Time[1024];
 	uint16_t Volt[1024];
-	
+	int scaler;
 };
 
 

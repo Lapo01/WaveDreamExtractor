@@ -222,7 +222,7 @@ void decode(const char *filename, TString fileoutput) {
             }
             chn_index = (ch.cn[1] - '0')*10 + ch.cn[2] - '0';
             Placeholder.NChannel = chn_index;
-			
+			Placeholder.scaler = scaler;
             if (ch.c[0] == 'C') {
 
                // Read DRS data
@@ -262,7 +262,7 @@ void decode(const char *filename, TString fileoutput) {
                
                for(int i = 0;  i<1024; i++){ 
 					   Placeholder.Volt[i] = waveform[b][chn_index][i];
-					   Placeholder.Time[i] = time[b][chn_index][i]*1e11;
+					   Placeholder.Time[i] = time[b][chn_index][i]*1e11; //salviamo al centesimo 
                   
 				   }
 				e.channel.push_back(Placeholder);
